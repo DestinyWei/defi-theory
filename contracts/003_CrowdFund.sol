@@ -89,7 +89,6 @@ contract CrowdFund {
         token.transferFrom(msg.sender, address(this), _amount);
 
         emit Pledge(_id, msg.sender, _amount);
-
     }
 
     function unpledge(uint _id, uint _amount) external {
@@ -102,7 +101,10 @@ contract CrowdFund {
         // 检查活动是否已经结束
         require(block.timestamp <= campaign.endAt, "ended");
         // 检查数量是否合法
-        require(_amount > 0 && _amount <= pledgedAmount[_id][msg.sender], "Invalid amount");
+        require(
+            _amount > 0 && _amount <= pledgedAmount[_id][msg.sender],
+            "Invalid amount"
+        );
         // 检查是否已取回
         require(!campaign.claimed, "claimed");
         // 取出相应数量的资金
@@ -129,8 +131,6 @@ contract CrowdFund {
         token.transfer(msg.sender, campaign.pledged);
         // 修改campaign状态
         campaign.claimed = true;
-        // 清空用户投资
-        // delete pledgedAmount[_id];
 
         emit Claim(_id);
     }
